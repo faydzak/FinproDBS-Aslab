@@ -8,8 +8,6 @@ type Player = {
   name: string;
   team: string;
   position: string;
-  nationality: string;
-  age: number;
   goals: number;
   assists: number;
 };
@@ -25,7 +23,7 @@ export default function PlayersPage() {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/players", {
+        const response = await fetch("http://localhost:4000/api/players", {
           method: "GET",
           credentials: "include",
         });
@@ -50,7 +48,7 @@ export default function PlayersPage() {
   }, []);
 
   const filteredPlayers = players.filter((player) =>
-    `${player.name} ${player.team} ${player.position} ${player.nationality}`
+    `${player.name} ${player.team} ${player.position}`
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
@@ -89,7 +87,7 @@ export default function PlayersPage() {
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 mb-8">
           <input
             type="text"
-            placeholder="Search by player, team, position or nationality..."
+            placeholder="Search by player, team, or position..."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -118,8 +116,6 @@ export default function PlayersPage() {
                     <th className="px-6 py-4">Player</th>
                     <th className="px-6 py-4">Team</th>
                     <th className="px-6 py-4">Position</th>
-                    <th className="px-6 py-4">Nationality</th>
-                    <th className="px-6 py-4">Age</th>
                     <th className="px-6 py-4">Goals</th>
                     <th className="px-6 py-4">Assists</th>
                     {/* <th className="px-6 py-4">Actions</th> */}
@@ -142,14 +138,6 @@ export default function PlayersPage() {
                         <span className="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-sm">
                           {player.position || "Unknown"}
                         </span>
-                      </td>
-
-                      <td className="px-6 py-4 text-slate-300">
-                        {player.nationality || "Unknown"}
-                      </td>
-
-                      <td className="px-6 py-4 text-slate-300">
-                        {player.age || "-"}
                       </td>
 
                       <td className="px-6 py-4 font-bold text-emerald-400">
