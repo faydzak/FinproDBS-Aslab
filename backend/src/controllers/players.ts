@@ -9,8 +9,6 @@ export async function getAllPlayers(_req: Request, res: Response): Promise<void>
         p.full_name                                              AS name,
         COALESCE(t.name, '')                                     AS team,
         p.position                                               AS position,
-        COALESCE(p.nationality, '')                              AS nationality,
-        COALESCE(EXTRACT(YEAR FROM AGE(p.date_of_birth))::int, 0) AS age,
         COUNT(*) FILTER (WHERE me.event_type = 'Goal')::int      AS goals,
         COUNT(*) FILTER (WHERE me.event_type = 'Assist')::int    AS assists
       FROM players p
@@ -41,8 +39,6 @@ export async function getPlayerById(req: Request, res: Response): Promise<void> 
         p.full_name                                              AS name,
         COALESCE(t.name, '')                                     AS team,
         p.position                                               AS position,
-        COALESCE(p.nationality, '')                              AS nationality,
-        COALESCE(EXTRACT(YEAR FROM AGE(p.date_of_birth))::int, 0) AS age,
         p.jersey_number                                          AS "jerseyNumber",
         COUNT(*) FILTER (WHERE me.event_type = 'Goal')::int      AS goals,
         COUNT(*) FILTER (WHERE me.event_type = 'Assist')::int    AS assists
