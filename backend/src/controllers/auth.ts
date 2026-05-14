@@ -30,7 +30,7 @@ interface LoginBody {
 // ---------- POST /api/auth/register ----------
  
 export async function register(req: Request, res: Response): Promise<void> {
-  const { username, email, password } = req.body as RegisterBody;
+  const { username, email, password } = (req.body ?? {}) as RegisterBody;
  
   if (!username || !email || !password) {
     res.status(400).json({ error: 'username, email, and password are required' });
@@ -86,7 +86,7 @@ export async function register(req: Request, res: Response): Promise<void> {
 // ---------- POST /api/auth/login ----------
  
 export async function login(req: Request, res: Response): Promise<void> {
-  const { identifier, password } = req.body as LoginBody;
+  const { identifier, password } = (req.body ?? {}) as LoginBody;
  
   if (!identifier || !password) {
     res.status(400).json({ error: 'identifier and password are required' });

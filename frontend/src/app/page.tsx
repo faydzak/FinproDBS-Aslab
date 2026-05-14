@@ -1,6 +1,10 @@
-import Link from "next/link";
+"use client";
 
+import Link from "next/link";
+import useAuth from "@/app/context/useAuth";
+import { LogOut } from "lucide-react";
 export default function HomePage() {
+  const { user, logout } = useAuth();
   return (
     <main className="min-h-screen bg-slate-950 text-white overflow-hidden">
       {/* HERO SECTION */}
@@ -26,12 +30,39 @@ export default function HomePage() {
               </div>
             </div>
 
-            <Link
-              href="/login"
-              className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-6 py-3 rounded-2xl transition"
-            >
-              Login
-            </Link>
+            {user ? (
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-2">
+                  <div className="h-11 w-11 rounded-full bg-emerald-500 flex items-center justify-center text-slate-950 font-black text-lg">
+                    {user.username.charAt(0).toUpperCase()}
+                  </div>
+
+                  <div>
+                    <p className="text-white font-semibold leading-none">
+                      {user.username}
+                    </p>
+
+                    <p className="text-slate-400 text-sm capitalize">
+                      {user.role}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={logout}
+                  className="h-12 w-12 rounded-2xl bg-slate-900 border border-slate-800 hover:border-red-500 hover:bg-red-500/10 flex items-center justify-center transition"
+                >
+                  <LogOut className="text-red-400" size={20} />
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-6 py-3 rounded-2xl transition"
+              >
+                Login
+              </Link>
+            )}
           </nav>
 
           {/* HERO CONTENT */}

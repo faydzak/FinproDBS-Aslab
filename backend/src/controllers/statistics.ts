@@ -1,7 +1,10 @@
-import type { Request, Response } from 'express';
-import pool from '../db.js';
+import type { Request, Response } from "express";
+import pool from "../db.js";
 
-export async function getStatistics(_req: Request, res: Response): Promise<void> {
+export async function getStatistics(
+  _req: Request,
+  res: Response,
+): Promise<void> {
   try {
     const teamsQuery = pool.query(`
       WITH team_matches AS (
@@ -28,7 +31,10 @@ export async function getStatistics(_req: Request, res: Response): Promise<void>
         + COUNT(*) FILTER (WHERE goals_for = goals_against))::int          AS points
       FROM team_matches
       GROUP BY team_id, team
-      ORDER BY points DESC, ("goalsFor" - "goalsAgainst") DESC, "goalsFor" DESC
+      ORDER BY
+  points DESC,
+  (COALESCE(SUM(goals_for), 0) - COALESCE(SUM(goals_against), 0)) DESC,
+  COALESCE(SUM(goals_for), 0) DESC
     `);
 
     const topScorersQuery = pool.query(`
@@ -46,14 +52,17 @@ export async function getStatistics(_req: Request, res: Response): Promise<void>
       LIMIT 10
     `);
 
-    const [teamsResult, topScorersResult] = await Promise.all([teamsQuery, topScorersQuery]);
+    const [teamsResult, topScorersResult] = await Promise.all([
+      teamsQuery,
+      topScorersQuery,
+    ]);
 
     res.json({
       teams: teamsResult.rows,
       topScorers: topScorersResult.rows,
     });
   } catch (err) {
-    console.error('[statistics] getStatistics failed', err);
-    res.status(500).json({ error: 'Failed to load statistics' });
+    console.error("[statistics] getStatistics failed", err);
+    res.status(500).json({ error: "Failed to load statistics" });
   }
 }

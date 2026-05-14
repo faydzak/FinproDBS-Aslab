@@ -2,14 +2,19 @@
 
 import React, { useState } from "react";
 
+import useAuth from "@/app/context/useAuth";
+import { useRouter } from "next/navigation";
+
 type LoginForm = {
-  email: string;
+  identifier: string;
   password: string;
 };
 
 export default function LoginPage() {
+  const { login } = useAuth();
+  const router = useRouter();
   const [form, setForm] = useState<LoginForm>({
-    email: "",
+    identifier: "",
     password: "",
   });
 
@@ -34,18 +39,21 @@ export default function LoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(form),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.message || "Login failed");
+        alert(data.error || "Login failed");
         return;
       }
 
-      console.log("Logged in user:", data);
-      alert("Login successful");
+      //console.log("Logged in user:", data);
+      login(data);
+      //alert("Login successful");
+      router.push("/");
     } catch (error) {
       console.error("Login error:", error);
       alert("Server error");
@@ -73,14 +81,16 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm text-slate-300 mb-2">Email</label>
+            <label className="block text-sm text-slate-300 mb-2">
+              Username or Email
+            </label>
 
             <input
-              type="email"
-              name="email"
-              value={form.email}
+              type="text"
+              name="identifier"
+              value={form.identifier}
               onChange={handleChange}
-              placeholder="admin@example.com"
+              placeholder="Username or email"
               className="w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-3 text-white outline-none focus:border-emerald-500"
               required
             />
