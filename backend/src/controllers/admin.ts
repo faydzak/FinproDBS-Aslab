@@ -1,44 +1,56 @@
-import type { Request, Response } from 'express';
-import pool from '../db.js';
+import type { Request, Response } from "express";
+import pool from "../db.js";
 
 // -------- GET /api/admin/summary --------
-export async function getAdminSummary(_req: Request, res: Response): Promise<void> {
+export async function getAdminSummary(
+  _req: Request,
+  res: Response,
+): Promise<void> {
   try {
     const [teams, players, matches] = await Promise.all([
-      pool.query<{ count: string }>('SELECT COUNT(*) FROM teams'),
-      pool.query<{ count: string }>('SELECT COUNT(*) FROM players'),
-      pool.query<{ count: string }>('SELECT COUNT(*) FROM matches'),
+      pool.query<{ count: string }>("SELECT COUNT(*) FROM teams"),
+      pool.query<{ count: string }>("SELECT COUNT(*) FROM players"),
+      pool.query<{ count: string }>("SELECT COUNT(*) FROM matches"),
     ]);
     res.json({
-      teams:   Number(teams.rows[0]?.count   ?? 0),
+      teams: Number(teams.rows[0]?.count ?? 0),
       players: Number(players.rows[0]?.count ?? 0),
       matches: Number(matches.rows[0]?.count ?? 0),
     });
   } catch (err) {
-    console.error('[admin] getAdminSummary failed', err);
-    res.status(500).json({ error: 'Failed to load admin summary' });
+    console.error("[admin] getAdminSummary failed", err);
+    res.status(500).json({ error: "Failed to load admin summary" });
   }
 }
 
 // -------- POST /api/admin/matches --------
 export async function addMatch(req: Request, res: Response): Promise<void> {
-  const { season, matchDate, homeTeamId, awayTeamId, homeScore, awayScore, status } =
-    req.body as {
-      season?: string;
-      matchDate?: string;
-      homeTeamId?: number;
-      awayTeamId?: number;
-      homeScore?: number;
-      awayScore?: number;
-      status?: string;
-    };
+  const {
+    season,
+    matchDate,
+    homeTeamId,
+    awayTeamId,
+    homeScore,
+    awayScore,
+    status,
+  } = req.body as {
+    season?: string;
+    matchDate?: string;
+    homeTeamId?: number;
+    awayTeamId?: number;
+    homeScore?: number;
+    awayScore?: number;
+    status?: string;
+  };
 
   if (!season || !matchDate || !homeTeamId || !awayTeamId) {
-    res.status(400).json({ error: 'season, matchDate, homeTeamId, awayTeamId are required' });
+    res.status(400).json({
+      error: "season, matchDate, homeTeamId, awayTeamId are required",
+    });
     return;
   }
   if (homeTeamId === awayTeamId) {
-    res.status(400).json({ error: 'home and away teams must differ' });
+    res.status(400).json({ error: "home and away teams must differ" });
     return;
   }
 
@@ -47,18 +59,29 @@ export async function addMatch(req: Request, res: Response): Promise<void> {
       `INSERT INTO matches (season, match_date, home_team_id, away_team_id, home_score, away_score, status)
        VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING match_id AS id`,
-      [season, matchDate, homeTeamId, awayTeamId, homeScore ?? 0, awayScore ?? 0, status ?? 'scheduled'],
+      [
+        season,
+        matchDate,
+        homeTeamId,
+        awayTeamId,
+        homeScore ?? 0,
+        awayScore ?? 0,
+        status ?? "scheduled",
+      ],
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.error('[admin] addMatch failed', err);
-    res.status(500).json({ error: 'Failed to add match' });
+    console.error("[admin] addMatch failed", err);
+    res.status(500).json({ error: "Failed to add match" });
   }
 }
 
 // -------- PUT /api/admin/matches/:id --------
-export async function editMatchResult(req: Request, res: Response): Promise<void> {
-  const id = Number(req.params['id']);
+export async function editMatchResult(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  const id = Number(req.params["id"]);
   const { homeScore, awayScore, status } = req.body as {
     homeScore?: number;
     awayScore?: number;
@@ -66,7 +89,7 @@ export async function editMatchResult(req: Request, res: Response): Promise<void
   };
 
   if (!Number.isFinite(id)) {
-    res.status(400).json({ error: 'Invalid match id' });
+    res.status(400).json({ error: "Invalid match id" });
     return;
   }
 
@@ -81,36 +104,36 @@ export async function editMatchResult(req: Request, res: Response): Promise<void
       [homeScore ?? null, awayScore ?? null, status ?? null, id],
     );
     if (result.rows.length === 0) {
-      res.status(404).json({ error: 'Match not found' });
+      res.status(404).json({ error: "Match not found" });
       return;
     }
     res.json(result.rows[0]);
   } catch (err) {
-    console.error('[admin] editMatchResult failed', err);
-    res.status(500).json({ error: 'Failed to update match' });
+    console.error("[admin] editMatchResult failed", err);
+    res.status(500).json({ error: "Failed to update match" });
   }
 }
 
 // -------- DELETE /api/admin/players/:id --------
 export async function deletePlayer(req: Request, res: Response): Promise<void> {
-  const id = Number(req.params['id']);
+  const id = Number(req.params["id"]);
   if (!Number.isFinite(id)) {
-    res.status(400).json({ error: 'Invalid player id' });
+    res.status(400).json({ error: "Invalid player id" });
     return;
   }
 
   try {
     const result = await pool.query(
-      'DELETE FROM players WHERE player_id = $1 RETURNING player_id',
+      "DELETE FROM players WHERE player_id = $1 RETURNING player_id",
       [id],
     );
     if (result.rows.length === 0) {
-      res.status(404).json({ error: 'Player not found' });
+      res.status(404).json({ error: "Player not found" });
       return;
     }
     res.status(204).end();
   } catch (err) {
-    console.error('[admin] deletePlayer failed', err);
-    res.status(500).json({ error: 'Failed to delete player' });
+    console.error("[admin] deletePlayer failed", err);
+    res.status(500).json({ error: "Failed to delete player" });
   }
 }
