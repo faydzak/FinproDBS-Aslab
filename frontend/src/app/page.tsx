@@ -3,6 +3,7 @@
 import Link from "next/link";
 import useAuth from "@/app/context/useAuth";
 import { LogOut } from "lucide-react";
+
 export default function HomePage() {
   const { user, logout } = useAuth();
   return (
@@ -20,10 +21,8 @@ export default function HomePage() {
               <div className="h-12 w-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-2xl">
                 ⚽
               </div>
-
               <div>
                 <h1 className="font-black text-xl">Premier League Platform</h1>
-
                 <p className="text-slate-400 text-sm">
                   Football Match Management & Statistics
                 </p>
@@ -36,18 +35,15 @@ export default function HomePage() {
                   <div className="h-11 w-11 rounded-full bg-emerald-500 flex items-center justify-center text-slate-950 font-black text-lg">
                     {user.username.charAt(0).toUpperCase()}
                   </div>
-
                   <div>
                     <p className="text-white font-semibold leading-none">
                       {user.username}
                     </p>
-
                     <p className="text-slate-400 text-sm capitalize">
                       {user.role}
                     </p>
                   </div>
                 </div>
-
                 <button
                   onClick={logout}
                   className="h-12 w-12 rounded-2xl bg-slate-900 border border-slate-800 hover:border-red-500 hover:bg-red-500/10 flex items-center justify-center transition"
@@ -56,12 +52,20 @@ export default function HomePage() {
                 </button>
               </div>
             ) : (
-              <Link
-                href="/login"
-                className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-6 py-3 rounded-2xl transition"
-              >
-                Login
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/login"
+                  className="border border-slate-700 hover:border-emerald-500 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-2xl transition"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/signup"
+                  className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-6 py-3 rounded-2xl transition"
+                >
+                  Sign Up
+                </Link>
+              </div>
             )}
           </nav>
 
@@ -85,44 +89,55 @@ export default function HomePage() {
 
               <div className="flex flex-wrap gap-4 mt-10">
                 <Link
+                  href="/dashboard"
+                  className="border border-slate-700 hover:border-emerald-500 hover:bg-slate-900 px-8 py-4 rounded-2xl transition"
+              >
+                Dashboard
+                </Link>
+                <Link
                   href="/matches"
                   className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 py-4 rounded-2xl transition"
-                >
-                  Explore Matches
+              >
+                Explore Matches
                 </Link>
-
-                <Link
-                  href="/statistics"
-                  className="border border-slate-700 hover:border-emerald-500 hover:bg-slate-900 px-8 py-4 rounded-2xl transition"
-                >
-                  View Statistics
-                </Link>
-
                 <Link
                   href="/players"
                   className="border border-slate-700 hover:border-emerald-500 hover:bg-slate-900 px-8 py-4 rounded-2xl transition"
-                >
-                  View Players
+              >
+                View Players
                 </Link>
-              </div>
+                <Link
+                  href="/teams"
+                  className="border border-slate-700 hover:border-emerald-500 hover:bg-slate-900 px-8 py-4 rounded-2xl transition"
+              >
+                View Teams
+                </Link>
+                <Link
+                  href="/standings"
+                  className="border border-slate-700 hover:border-emerald-500 hover:bg-slate-900 px-8 py-4 rounded-2xl transition"
+              >
+                Standings
+                </Link>
+                <Link
+                  href="/statistics"
+                  className="border border-slate-700 hover:border-emerald-500 hover:bg-slate-900 px-8 py-4 rounded-2xl transition"
+              >
+                View Statistics
+              </Link>
+            </div>
 
               {/* STATS */}
               <div className="grid grid-cols-3 gap-6 mt-16">
                 <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
                   <h3 className="text-4xl font-black text-emerald-400">20</h3>
-
                   <p className="text-slate-400 mt-2">Premier League Teams</p>
                 </div>
-
                 <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
                   <h3 className="text-4xl font-black text-blue-400">380</h3>
-
                   <p className="text-slate-400 mt-2">Matches Per Season</p>
                 </div>
-
                 <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
                   <h3 className="text-4xl font-black text-yellow-400">500+</h3>
-
                   <p className="text-slate-400 mt-2">Player Statistics</p>
                 </div>
               </div>
@@ -131,69 +146,49 @@ export default function HomePage() {
             {/* RIGHT PANEL */}
             <div className="relative">
               <div className="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 shadow-2xl">
-                {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                   <div>
                     <p className="text-slate-400 text-sm">Featured Match</p>
-
-                    <h3 className="text-2xl font-bold mt-1">
-                      Arsenal vs Chelsea
-                    </h3>
+                    <h3 className="text-2xl font-bold mt-1">Arsenal vs Chelsea</h3>
                   </div>
-
                   <span className="bg-red-500/20 text-red-300 px-4 py-2 rounded-full text-sm font-semibold">
                     LIVE
                   </span>
                 </div>
 
-                {/* Match */}
                 <div className="bg-slate-800 rounded-3xl p-8">
                   <div className="flex items-center justify-between">
                     <div className="text-center">
                       <div className="h-20 w-20 rounded-full bg-red-500 flex items-center justify-center text-3xl mx-auto">
                         A
                       </div>
-
                       <h4 className="font-bold mt-4">Arsenal</h4>
                     </div>
-
                     <div className="text-center">
                       <p className="text-slate-400 text-sm">Emirates Stadium</p>
-
                       <h2 className="text-6xl font-black my-4">2 - 1</h2>
-
-                      <p className="text-emerald-400 font-semibold">
-                        76 &apos;
-                      </p>
+                      <p className="text-emerald-400 font-semibold">76 &apos;</p>
                     </div>
-
                     <div className="text-center">
                       <div className="h-20 w-20 rounded-full bg-blue-500 flex items-center justify-center text-3xl mx-auto">
                         C
                       </div>
-
                       <h4 className="font-bold mt-4">Chelsea</h4>
                     </div>
                   </div>
                 </div>
 
-                {/* Match stats */}
                 <div className="grid grid-cols-3 gap-4 mt-8">
                   <div className="bg-slate-800 rounded-2xl p-4 text-center">
                     <p className="text-slate-400 text-sm">Possession</p>
-
                     <h4 className="text-2xl font-bold mt-2">61%</h4>
                   </div>
-
                   <div className="bg-slate-800 rounded-2xl p-4 text-center">
                     <p className="text-slate-400 text-sm">Shots</p>
-
                     <h4 className="text-2xl font-bold mt-2">18</h4>
                   </div>
-
                   <div className="bg-slate-800 rounded-2xl p-4 text-center">
                     <p className="text-slate-400 text-sm">Corners</p>
-
                     <h4 className="text-2xl font-bold mt-2">7</h4>
                   </div>
                 </div>
