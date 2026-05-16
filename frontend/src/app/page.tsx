@@ -44,6 +44,14 @@ export default function HomePage() {
                     </p>
                   </div>
                 </div>
+
+                {user && user.role == "admin" && (
+                  <Link href="/admin">
+                    <div className="flex items-center gap-3 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-4">
+                      Admin World
+                    </div>
+                  </Link>
+                )}
                 <button
                   onClick={logout}
                   className="h-12 w-12 rounded-2xl bg-slate-900 border border-slate-800 hover:border-red-500 hover:bg-red-500/10 flex items-center justify-center transition"
@@ -91,40 +99,40 @@ export default function HomePage() {
                 <Link
                   href="/dashboard"
                   className="border border-slate-700 hover:border-emerald-500 hover:bg-slate-900 px-8 py-4 rounded-2xl transition"
-              >
-                Dashboard
+                >
+                  Dashboard
                 </Link>
                 <Link
                   href="/matches"
                   className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 py-4 rounded-2xl transition"
-              >
-                Explore Matches
+                >
+                  Explore Matches
                 </Link>
                 <Link
                   href="/players"
                   className="border border-slate-700 hover:border-emerald-500 hover:bg-slate-900 px-8 py-4 rounded-2xl transition"
-              >
-                View Players
+                >
+                  View Players
                 </Link>
                 <Link
                   href="/teams"
                   className="border border-slate-700 hover:border-emerald-500 hover:bg-slate-900 px-8 py-4 rounded-2xl transition"
-              >
-                View Teams
+                >
+                  View Teams
                 </Link>
                 <Link
                   href="/standings"
                   className="border border-slate-700 hover:border-emerald-500 hover:bg-slate-900 px-8 py-4 rounded-2xl transition"
-              >
-                Standings
+                >
+                  Standings
                 </Link>
                 <Link
                   href="/statistics"
                   className="border border-slate-700 hover:border-emerald-500 hover:bg-slate-900 px-8 py-4 rounded-2xl transition"
-              >
-                View Statistics
-              </Link>
-            </div>
+                >
+                  View Statistics
+                </Link>
+              </div>
 
               {/* STATS */}
               <div className="grid grid-cols-3 gap-6 mt-16">
@@ -149,7 +157,9 @@ export default function HomePage() {
                 <div className="flex items-center justify-between mb-8">
                   <div>
                     <p className="text-slate-400 text-sm">Featured Match</p>
-                    <h3 className="text-2xl font-bold mt-1">Arsenal vs Chelsea</h3>
+                    <h3 className="text-2xl font-bold mt-1">
+                      Arsenal vs Chelsea
+                    </h3>
                   </div>
                   <span className="bg-red-500/20 text-red-300 px-4 py-2 rounded-full text-sm font-semibold">
                     LIVE
@@ -167,7 +177,9 @@ export default function HomePage() {
                     <div className="text-center">
                       <p className="text-slate-400 text-sm">Emirates Stadium</p>
                       <h2 className="text-6xl font-black my-4">2 - 1</h2>
-                      <p className="text-emerald-400 font-semibold">76 &apos;</p>
+                      <p className="text-emerald-400 font-semibold">
+                        76 &apos;
+                      </p>
                     </div>
                     <div className="text-center">
                       <div className="h-20 w-20 rounded-full bg-blue-500 flex items-center justify-center text-3xl mx-auto">

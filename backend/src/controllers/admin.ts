@@ -117,23 +117,45 @@ export async function editMatchResult(
 // -------- DELETE /api/admin/players/:id --------
 export async function deletePlayer(req: Request, res: Response): Promise<void> {
   const id = Number(req.params["id"]);
+
   if (!Number.isFinite(id)) {
     res.status(400).json({ error: "Invalid player id" });
     return;
   }
 
+  // We first use a transaction to safely delete related match events first,
+  // then delete the player to avoid foreign key constraint errors.
+  const client = await pool.connect();
+
   try {
-    const result = await pool.query(
+    await client.query("BEGIN");
+
+    // Delete all match events linked to this player
+    await client.query("DELETE FROM match_events WHERE player_id = $1", [id]);
+
+    // Delete the player
+    const result = await client.query(
       "DELETE FROM players WHERE player_id = $1 RETURNING player_id",
       [id],
     );
+
     if (result.rows.length === 0) {
+      await client.query("ROLLBACK");
+
       res.status(404).json({ error: "Player not found" });
       return;
     }
+
+    await client.query("COMMIT");
+
     res.status(204).end();
   } catch (err) {
+    await client.query("ROLLBACK");
+
     console.error("[admin] deletePlayer failed", err);
+
     res.status(500).json({ error: "Failed to delete player" });
+  } finally {
+    client.release();
   }
 }
