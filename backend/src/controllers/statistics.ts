@@ -52,14 +52,45 @@ export async function getStatistics(
       LIMIT 10
     `);
 
-    const [teamsResult, topScorersResult] = await Promise.all([
-      teamsQuery,
-      topScorersQuery,
-    ]);
+    const topAssistsQuery = pool.query(`
+      SELECT
+        p.player_id          AS id,
+        p.full_name          AS "playerName",
+        COALESCE(t.name, '') AS team,
+        COUNT(*)::int        AS assists
+      FROM match_events me
+      JOIN players p ON p.player_id = me.player_id
+      LEFT JOIN teams t ON t.team_id = p.team_id
+      WHERE me.event_type = 'Assist'
+      GROUP BY p.player_id, t.name
+      ORDER BY assists DESC, p.full_name ASC
+      LIMIT 10
+    `);
+
+    const cleanSheetsQuery = pool.query(`
+      SELECT
+        t.team_id AS id,
+        t.name    AS team,
+        COUNT(*)::int AS "cleanSheets"
+      FROM teams t
+      JOIN matches m ON m.status = 'finished'
+        AND (m.home_team_id = t.team_id OR m.away_team_id = t.team_id)
+      WHERE
+        (m.home_team_id = t.team_id AND m.away_score = 0)
+        OR (m.away_team_id = t.team_id AND m.home_score = 0)
+      GROUP BY t.team_id, t.name
+      ORDER BY "cleanSheets" DESC
+      LIMIT 10
+    `);
+
+    const [teamsResult, topScorersResult, topAssistsResult, cleanSheetsResult] =
+      await Promise.all([teamsQuery, topScorersQuery, topAssistsQuery, cleanSheetsQuery]);
 
     res.json({
       teams: teamsResult.rows,
       topScorers: topScorersResult.rows,
+      topAssists: topAssistsResult.rows,
+      cleanSheets: cleanSheetsResult.rows,
     });
   } catch (err) {
     console.error("[statistics] getStatistics failed", err);

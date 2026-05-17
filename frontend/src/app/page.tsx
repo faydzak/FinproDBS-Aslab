@@ -18,15 +18,10 @@ export default function HomePage() {
           {/* NAVBAR */}
           <nav className="flex items-center justify-between mb-24">
             <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-2xl">
-                ⚽
+              <div className="h-12 w-12 bg-white rounded-xl flex items-center justify-center overflow-hidden">
+                <img src={encodeURI("/England - Premier League/Premier League.svg")} alt="Premier League" className="h-12 w-12 object-contain" />
               </div>
-              <div>
-                <h1 className="font-black text-xl">Premier League Platform</h1>
-                <p className="text-slate-400 text-sm">
-                  Football Match Management & Statistics
-                </p>
-              </div>
+              <h1 className="font-black text-xl">PremierLeagueNerd</h1>
             </div>
 
             {user ? (
@@ -78,30 +73,23 @@ export default function HomePage() {
           </nav>
 
           {/* HERO CONTENT */}
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="max-w-3xl">
             <div>
               <p className="uppercase tracking-[0.3em] text-emerald-400 font-semibold text-sm">
                 Premier League Database System
               </p>
 
               <h2 className="text-6xl md:text-7xl font-black leading-tight mt-6">
-                Football Statistics
-                <span className="text-emerald-400"> Reimagined</span>
+                Premier League
+                <span className="text-emerald-400"> Management and Statistics</span>
               </h2>
 
               <p className="text-slate-400 text-lg mt-8 leading-relaxed max-w-2xl">
-                Manage Premier League matches, players, clubs and advanced
-                statistics through a modern football analytics dashboard powered
-                by PostgreSQL, Node.js and Next.js.
+                Manage Premier League matches, players, clubs and statistics
+                through a football analytics dashboard.
               </p>
 
               <div className="flex flex-wrap gap-4 mt-10">
-                <Link
-                  href="/dashboard"
-                  className="border border-slate-700 hover:border-emerald-500 hover:bg-slate-900 px-8 py-4 rounded-2xl transition"
-                >
-                  Dashboard
-                </Link>
                 <Link
                   href="/matches"
                   className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 py-4 rounded-2xl transition"
@@ -147,62 +135,6 @@ export default function HomePage() {
                 <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
                   <h3 className="text-4xl font-black text-yellow-400">500+</h3>
                   <p className="text-slate-400 mt-2">Player Statistics</p>
-                </div>
-              </div>
-            </div>
-
-            {/* RIGHT PANEL */}
-            <div className="relative">
-              <div className="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 shadow-2xl">
-                <div className="flex items-center justify-between mb-8">
-                  <div>
-                    <p className="text-slate-400 text-sm">Featured Match</p>
-                    <h3 className="text-2xl font-bold mt-1">
-                      Arsenal vs Chelsea
-                    </h3>
-                  </div>
-                  <span className="bg-red-500/20 text-red-300 px-4 py-2 rounded-full text-sm font-semibold">
-                    LIVE
-                  </span>
-                </div>
-
-                <div className="bg-slate-800 rounded-3xl p-8">
-                  <div className="flex items-center justify-between">
-                    <div className="text-center">
-                      <div className="h-20 w-20 rounded-full bg-red-500 flex items-center justify-center text-3xl mx-auto">
-                        A
-                      </div>
-                      <h4 className="font-bold mt-4">Arsenal</h4>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-slate-400 text-sm">Emirates Stadium</p>
-                      <h2 className="text-6xl font-black my-4">2 - 1</h2>
-                      <p className="text-emerald-400 font-semibold">
-                        76 &apos;
-                      </p>
-                    </div>
-                    <div className="text-center">
-                      <div className="h-20 w-20 rounded-full bg-blue-500 flex items-center justify-center text-3xl mx-auto">
-                        C
-                      </div>
-                      <h4 className="font-bold mt-4">Chelsea</h4>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-4 mt-8">
-                  <div className="bg-slate-800 rounded-2xl p-4 text-center">
-                    <p className="text-slate-400 text-sm">Possession</p>
-                    <h4 className="text-2xl font-bold mt-2">61%</h4>
-                  </div>
-                  <div className="bg-slate-800 rounded-2xl p-4 text-center">
-                    <p className="text-slate-400 text-sm">Shots</p>
-                    <h4 className="text-2xl font-bold mt-2">18</h4>
-                  </div>
-                  <div className="bg-slate-800 rounded-2xl p-4 text-center">
-                    <p className="text-slate-400 text-sm">Corners</p>
-                    <h4 className="text-2xl font-bold mt-2">7</h4>
-                  </div>
                 </div>
               </div>
             </div>
