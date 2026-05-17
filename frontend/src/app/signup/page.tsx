@@ -35,7 +35,7 @@ export default function SignupPage() {
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch("http://localhost:4000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -66,12 +66,12 @@ export default function SignupPage() {
     <main className="min-h-screen bg-slate-950 flex items-center justify-center px-6">
       <section className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-8">
         <div className="text-center mb-8">
-          <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-emerald-500 flex items-center justify-center text-3xl">
-            ⚽
+          <div className="mx-auto mb-4 h-16 w-16 flex items-center justify-center overflow-hidden">
+            <img src={encodeURI("/England - Premier League/Premier League.svg")} alt="Premier League" className="h-16 w-16 object-contain" />
           </div>
           <h1 className="text-3xl font-bold text-white">Create Account</h1>
           <p className="text-slate-400 mt-2">
-            Join the Premier League Platform
+            Join PremierLeagueNerd
           </p>
         </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Match = {
   id: number;
@@ -14,18 +14,15 @@ type Match = {
   status: "scheduled" | "finished" | "live";
 };
 
-const MATCHES_PER_PAGE = 10;
-
 export default function MatchesPage() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [visibleCount, setVisibleCount] = useState(MATCHES_PER_PAGE);
 
   useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/matches", {
+        const response = await fetch("http://localhost:4000/api/matches", {
           method: "GET",
           credentials: "include",
         });
@@ -49,14 +46,19 @@ export default function MatchesPage() {
   }, []);
 
   const filteredMatches = matches.filter((match) =>
-    `${match.homeTeam} ${match.awayTeam} ${match.stadium} ${match.status}`
+    `${match.homeTeam} ${match.awayTeam} ${match.stadium} ${match.matchDate}`
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
 
-  const visibleMatches = filteredMatches.slice(0, visibleCount);
+  const groupedByDate = filteredMatches.reduce<Record<string, Match[]>>((acc, match) => {
+    const date = match.matchDate;
+    if (!acc[date]) acc[date] = [];
+    acc[date].push(match);
+    return acc;
+  }, {});
 
-  const hasMoreMatches = visibleCount < filteredMatches.length;
+  const dates = Object.keys(groupedByDate).sort();
 
   return (
     <main className="min-h-screen bg-slate-950 text-white px-6 py-8">
@@ -86,17 +88,16 @@ export default function MatchesPage() {
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 mb-8">
           <input
             type="text"
-            placeholder="Search by team name, stadium or status..."
+            placeholder="Search by team name, stadium, date, year..."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
-              setVisibleCount(MATCHES_PER_PAGE);
             }}
             className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500"
           />
 
           <p className="text-slate-400 text-sm mt-3">
-            Showing {visibleMatches.length} of {filteredMatches.length} matches
+            {filteredMatches.length} matches across {dates.length} matchdays
           </p>
         </div>
 
@@ -107,77 +108,57 @@ export default function MatchesPage() {
             <p className="text-slate-400">No matches found.</p>
           </div>
         ) : (
-          <>
-            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {visibleMatches.map((match) => (
-                <article
-                  key={match.id}
-                  className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl hover:border-emerald-500 transition"
-                >
-                  <div className="flex items-center justify-between mb-5">
-                    <span
-                      className={`text-xs font-bold px-3 py-1 rounded-full ${
-                        match.status === "finished"
-                          ? "bg-blue-500/20 text-blue-300"
-                          : match.status === "live"
-                            ? "bg-red-500/20 text-red-300"
-                            : "bg-yellow-500/20 text-yellow-300"
-                      }`}
+          <div className="space-y-10">
+            {dates.map((date) => (
+              <section key={date}>
+                <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-3">
+                  <span className="bg-emerald-500/20 text-emerald-400 px-4 py-1 rounded-full text-sm font-semibold">
+                    {new Date(date).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                  </span>
+                  <span className="text-slate-600 text-sm font-normal">{groupedByDate[date].length} matches</span>
+                </h2>
+                <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {groupedByDate[date].map((match) => (
+                    <article
+                      key={match.id}
+                      className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl hover:border-emerald-500 transition"
                     >
-                      {match.status.toUpperCase()}
-                    </span>
+                      <div className="flex items-center justify-between mb-5">
+                        <span
+                          className={`text-xs font-bold px-3 py-1 rounded-full ${
+                            match.status === "finished"
+                              ? "bg-blue-500/20 text-blue-300"
+                              : match.status === "live"
+                                ? "bg-red-500/20 text-red-300"
+                                : "bg-yellow-500/20 text-yellow-300"
+                          }`}
+                        >
+                          {match.status.toUpperCase()}
+                        </span>
+                        <span className="text-sm text-slate-400">{match.matchDate}</span>
+                      </div>
 
-                    <span className="text-sm text-slate-400">
-                      {match.matchDate}
-                    </span>
-                  </div>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between text-xl font-bold">
+                          <span>{match.homeTeam}</span>
+                          <span>{match.homeScore ?? "-"}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xl font-bold">
+                          <span>{match.awayTeam}</span>
+                          <span>{match.awayScore ?? "-"}</span>
+                        </div>
+                      </div>
 
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between text-xl font-bold">
-                      <span>{match.homeTeam}</span>
-                      <span>{match.homeScore ?? "-"}</span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-xl font-bold">
-                      <span>{match.awayTeam}</span>
-                      <span>{match.awayScore ?? "-"}</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-5 border-t border-slate-800">
-                    <p className="text-sm text-slate-400">Stadium</p>
-
-                    <p className="font-medium">
-                      {match.stadium || "Unknown stadium"}
-                    </p>
-                  </div>
-
-                  {/* <div className="flex gap-3 mt-6">
-                    <button className="flex-1 bg-slate-800 hover:bg-slate-700 py-2 rounded-xl text-sm transition">
-                      Edit
-                    </button>
-
-                    <button className="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-300 py-2 rounded-xl text-sm transition">
-                      Delete
-                    </button>
-                  </div> */}
-                </article>
-              ))}
-            </div>
-
-            {hasMoreMatches && (
-              <div className="flex justify-center mt-10">
-                <button
-                  onClick={() =>
-                    setVisibleCount((prev) => prev + MATCHES_PER_PAGE)
-                  }
-                  className="bg-slate-900 border border-slate-800 hover:border-emerald-500 hover:bg-slate-800 text-white font-bold px-8 py-4 rounded-2xl transition"
-                >
-                  See more
-                </button>
-              </div>
-            )}
-          </>
+                      <div className="mt-6 pt-5 border-t border-slate-800">
+                        <p className="text-sm text-slate-400">Stadium</p>
+                        <p className="font-medium">{match.stadium || "Unknown stadium"}</p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
         )}
       </section>
     </main>
