@@ -25,7 +25,7 @@ export default function StandingsPage() {
   useEffect(() => {
     const fetchStandings = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/standings", {
+        const response = await fetch("http://localhost:4000/api/standings", {
           method: "GET",
           credentials: "include",
         });

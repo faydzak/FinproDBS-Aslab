@@ -23,7 +23,7 @@ export default function PlayersPage() {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/players", {
+        const response = await fetch("http://localhost:4000/api/players", {
           method: "GET",
           credentials: "include",
         });

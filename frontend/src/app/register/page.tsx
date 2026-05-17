@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-
+import Link from "next/link";
 import useAuth from "@/app/context/useAuth";
 import { useRouter } from "next/navigation";
 
@@ -21,7 +21,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // TYPESCRIPT: React.ChangeEvent<HTMLInputElement> précise le type de l'événement.
     setForm({
       ...form,
       [e.target.name]: e.target.value,
@@ -29,7 +28,6 @@ export default function LoginPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    // TYPESCRIPT: React.FormEvent<HTMLFormElement> précise que l'événement vient d'un formulaire.
     e.preventDefault();
     setLoading(true);
 
@@ -50,9 +48,7 @@ export default function LoginPage() {
         return;
       }
 
-      //console.log("Logged in user:", data);
       login(data);
-      //alert("Login successful");
       router.push("/");
     } catch (error) {
       console.error("Login error:", error);
@@ -120,6 +116,16 @@ export default function LoginPage() {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        <p className="text-center text-sm text-slate-400 mt-6">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/register"
+            className="text-emerald-400 hover:text-emerald-300 font-semibold"
+          >
+            Create one
+          </Link>
+        </p>
       </section>
     </main>
   );
